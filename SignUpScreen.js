@@ -58,7 +58,7 @@ export default function SignUpScreen({ onSignIn }) {
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
           <Image style={styles.image} source={require("./assets/Login.jpeg")} />
-          <Text style={{ marginBottom: 10, fontSize: 30 }}>Register</Text>
+          <Text style={{ marginBottom: 10, fontSize: 30 }}>SignUp</Text>
 
           <View style={styles.inputView}>
             <TextInput

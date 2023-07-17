@@ -7,10 +7,12 @@ import {
   View,
   useWindowDimensions,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo";
+import { Feather } from "@expo/vector-icons";
 import {
   Chip,
   PaperProvider,
@@ -21,12 +23,15 @@ import {
 } from "react-native-paper";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RenderHtml from "react-native-render-html";
+import { Image } from "react-native";
 import Details from "./detail";
 import Comments from "./comment";
 import { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { LoginFlow } from "./loginFlow";
+import EditProfile from "./editProfile";
+import { useUser } from "@clerk/clerk-react";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -74,12 +79,46 @@ function SettingsScreen() {
   );
 }
 
-function Profile() {
-  return (
-    <View>
-      <Text>Profile</Text>
-    </View>
-  );
+function Profile({ navigation }) {
+  const { isSignedIn, user, isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (isSignedIn) {
+    console.log(user);
+    return (
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 8,
+            backgroundColor: "blue",
+            borderRadius: 15,
+            width: "95%",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Image
+              source={require("./assets/men.jpeg")}
+              style={{ width: 80, height: 80, borderRadius: 50 }}
+            />
+            <View style={{ marginLeft: 20 }}>
+              <Text style={{ color: "white" }}>{user.fullName}</Text>
+              <Text style={{ color: "white" }}>Email</Text>
+            </View>
+          </View>
+
+          <TouchableOpacity onPress={() => navigation.navigate("EditProfile")}>
+            <Feather name="edit" size={34} color="white" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
 }
 
 const SignOut = () => {
@@ -136,6 +175,7 @@ function Home() {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Detail" component={Details} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Comment" component={Comments} />
     </Stack.Navigator>
   );
